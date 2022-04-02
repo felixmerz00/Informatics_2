@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <math.h>
 
+void print_Array(int *A, int length)
+{
+    for(int i = 0; i < length; i++){
+        printf("%d ", A[i]);
+    }
+    printf("\n");
+}
+
 int* merge(int A[], int l, int r, int m, int direction)
 {
     int B[r];
@@ -39,13 +47,13 @@ int* merge(int A[], int l, int r, int m, int direction)
     return A;
 }
 
-int* mergeSort(int A[], int l, int r)
+int* mergeSort(int A[], int l, int r, int direction)
 {
     if(l < r){
         int m = floor((l+r)/2);
-        mergeSort(A, l, m);
-        mergeSort(A, m+1, r);
-        A = merge(A, l, r, m, 1);
+        mergeSort(A, l, m, direction);
+        mergeSort(A, m+1, r, direction);
+        A = merge(A, l, r, m, direction);
     }
     return A;
 }
@@ -54,12 +62,21 @@ int main()
 {
     int direction = 0;
     while(direction !=  1 && direction != -1){  //if you enter ".1" as value, the program goes nuts, why?
-        printf("In which direction do you want to order the array? (a/d)");
+        printf("In which direction do you want to order the array? (1/-1)");
         scanf("%d", &direction);
-        printf("%d\n", direction);
+        if(direction == 1){
+            printf("Array is sorted in ascending order:\n");
+        }
+        else if(direction == -1){
+            printf("Array is sorted in descending order:\n");
+        }
+        else{
+            printf("%d is invalid. Please enter a valid value: 1, -1.\n", direction);
+        }
     }
-    int A[] = {1, 2, 3, 5, 6, 4};
-    int B[] = {1, 2, 3, 4, 5, 6};
-
-    
+    int A[8] = {5, 2, 4, 7, 1, 3, 6, 2};
+    int length = 8;
+    int *pA = &A;
+    pA = mergeSort(A, 0, length-1, direction);
+    print_Array(A, length);    
 }
