@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 void print_Array(int *A, int length)
 {
@@ -9,7 +10,7 @@ void print_Array(int *A, int length)
     printf("\n");
 }
 
-int* merge(int A[], int l, int r, int m, int direction)
+void merge(int *A, int l, int r, int m, int direction)
 {
     int B[r];
     int i, j, k;
@@ -33,7 +34,7 @@ int* merge(int A[], int l, int r, int m, int direction)
         }
     }
     if(direction == -1){
-        for(k = l; k >= r; k++){
+        for(k = l; k <= r; k++){
             if(B[i] > B[j]){
                 A[k] = B[i];
                 i++;
@@ -44,18 +45,16 @@ int* merge(int A[], int l, int r, int m, int direction)
             }
         }
     }
-    return A;
 }
 
-int* mergeSort(int A[], int l, int r, int direction)
+void mergeSort(int *A, int l, int r, int direction)
 {
     if(l < r){
         int m = floor((l+r)/2);
         mergeSort(A, l, m, direction);
         mergeSort(A, m+1, r, direction);
-        A = merge(A, l, r, m, direction);
+        merge(A, l, r, m, direction);
     }
-    return A;
 }
 
 int main()
@@ -76,7 +75,11 @@ int main()
     }
     int A[8] = {5, 2, 4, 7, 1, 3, 6, 2};
     int length = 8;
-    int *pA = &A;
-    pA = mergeSort(A, 0, length-1, direction);
-    print_Array(A, length);    
+    int *pA;
+    pA = (int*)malloc(8*sizeof(int));
+    for(int i = 0; i < length; i++){
+        pA[i] = A[i];
+    }
+    mergeSort(pA, 0, length-1, direction);
+    print_Array(pA, length);    
 }
