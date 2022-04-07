@@ -1,3 +1,10 @@
+//
+//  main.c
+//  Ex06Task02
+//
+//  Created by Felix Merz on 07.04.22.
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -9,24 +16,27 @@ struct Node{
 void displayList(struct Node** l);
 
 void groupingLinkedList(struct Node** l, int length){
-    int i;
-    struct Node* p;
-    struct Node* q;
+    struct Node* p; //iterates through the list to find the nodes with even data
+    struct Node* q; //points on the last element of the list
+    struct Node* end;   //points to the end of the original list and doesn't move
     q = *l;
     p = *l;
     while(q->next != NULL){
         q = q->next;
     }
-    for(i = 0; i < length; i++){
-        displayList(l);
-        if(p->data % 2 == 0){
-            q->next = p;
-            p = p->next;
+    end = q;
+    while(1 == 1){
+        if(p->next->data % 2 == 0){
+            q->next = p->next;
+            p->next = p->next->next;
             q->next->next = NULL;
             q = q->next;
         }
         else{
             p = p->next;
+        }
+        if(q == end || p == end){
+            break;
         }
     }
 }
@@ -45,7 +55,7 @@ int getLength(struct Node** l)
 
 //takes the head of the list and insertts a new node at the end of the list
 void insertList(struct Node** l, int data)
-{ 
+{
     struct Node* p;
 
     if(*l == NULL){
