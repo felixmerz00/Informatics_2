@@ -23,6 +23,21 @@ void printTree(struct TreeNode* root)
     printf("\n");
 }
 
+struct TreeNode* delete(struct TreeNode* root, int val)
+{
+    while(root->left->val != val && root->right->val != val){
+        if(root->val > val){delete(root->left, val);}
+        else if(root->val < val){delete(root->right, val);}
+        /*
+        
+        NOT FINISHED
+        
+        */
+
+
+    }
+}
+
 struct TreeNode* search(struct TreeNode* root, int val)
 {
     if(root == NULL){return NULL;}
