@@ -3,7 +3,7 @@
 
 struct Node{
     int value;
-    char color; // red = "r", black = "b"
+    char color; // red = 'r', black = 'b'
     struct Node *parent;
     struct Node *rightChild;
     struct Node *leftChild;
@@ -15,7 +15,7 @@ void displayTreeInorder(struct Node *p)
 {
     if(p != NULL){
         displayTreeInorder(p->leftChild);
-        printf("%d ", p->value);
+        printf("(%d, %c) ", p->value, p->color);
         displayTreeInorder(p->rightChild);
     }
 }
@@ -25,7 +25,7 @@ void displayTreeInorder(struct Node *p)
 void displayTreePreorder(struct Node *p)
 {
     if(p != NULL){
-        printf("%d ", p->value);
+        printf("(%d, %c) ", p->value, p->color);
         displayTreePreorder(p->leftChild);
         displayTreePreorder(p->rightChild);
     }
@@ -34,7 +34,7 @@ void displayTreePreorder(struct Node *p)
 // Right rotates around a given root t of a subtree
 // The left child of t, node s will be the root of the subtree after the changes and t will be the right child of s
 // Slides 433
-struct Node* rightRotate(struct Node *t, struct Node *root)
+struct Node* rightRotate(struct Node *root, struct Node *t)
 {
     struct Node *s = t->leftChild;
     t->leftChild = s->rightChild;
@@ -82,6 +82,69 @@ struct Node* leftRotate(struct Node *root, struct Node *t)
     return root;
 }
 
+// Fixup takes a node and corrects the coloring and the black height to fullfill the red black tree conditions
+// Slide 435 and following
+struct Node* fixup(struct Node *root, struct Node *t)
+{
+    // If t is the root --> color it black and return
+    if(t == root){
+        t->color = 'b';
+        return root;
+    }
+    // If t has no grandparent, there is nothing to do
+    if(t->parent->parent == NULL){return root;}
+    struct Node *p = t->parent; // Parent of t
+    struct Node *g = t->parent->parent; // Grandparent of t
+    struct Node *u = NULL; // Uncle of t
+
+    // Test weather p is the left child of g: case 0 - case 3
+    // From Slide 435 - 439
+    if(g->leftChild == p){
+        if(g->rightChild != NULL){  // Asign uncle
+            u = g->rightChild;
+        }
+        if(p->color == 'b'){    // Case 0: Color of p is black --> no property violated, hence nothing to do
+            
+        }else if(u != NULL && u->color == 'r'){  // Case 1: t's uncle is red --> p->col = u->col = black, g->col = red, set t = g
+            p->color = 'b';
+            u->color = 'b';
+            g->color = 'r';
+            t = g;
+            root = fixup(root, t);
+        }else if(p->rightChild == t){   // Case 2: t's uncle is black and t is a right child --> leftRotate(p), t = p
+            leftRotate(root, p);
+            t = p;
+            root = fixup(root, t);
+        }else if(p->leftChild == t){    // Case 3: t’s uncle u is black and t is a left child --> p->col = black, g->col = red, rightRotate(g)
+            p->color = 'b';
+            g->color = 'r';
+            rightRotate(root, g);
+        }
+    }else{  // p is the right child of g: mirror cases of case 0 - case 3
+        if(g->leftChild != NULL){  // Asign uncle
+            u = g->leftChild;
+        }
+        if(p->color == 'b'){    // Case 0: Color of p is black --> no property violated, hence nothing to do
+            
+        }else if(u != NULL && u->color == 'r'){  // Case 1: t's uncle is red --> p->col = u->col = black, g->col = red, set t = g
+            p->color = 'b';
+            u->color = 'b';
+            g->color = 'r';
+            t = g;
+            root = fixup(root, t);
+        }else if(p->leftChild == t){   // Case 2: t's uncle is black and t is a left child --> rightRotate(p), t = p
+            rightRotate(root, p);
+            t = p;
+            root = fixup(root, t);
+        }else if(p->rightChild == t){    // Case 3: t’s uncle u is black and t is a right child --> p->col = black, g->col = red, leftRotate(g)
+            p->color = 'b';
+            g->color = 'r';
+            leftRotate(root, g);
+        }
+    }
+    return root;
+}
+
 // Takes a pointer to the root node of the tree and returns the root node of the edited tree
 // Inserts a new node with the provided value into the tree
 // Based on slides page 434
@@ -115,8 +178,8 @@ struct Node* RBTInsert(struct Node *root, int value)
             s->rightChild = t;
         }
     }
+    fixup(root, t);
     return root;
-    // Insert color fixup
 }
 
 int main()
@@ -133,6 +196,14 @@ int main()
     printf("Tree inorder print:\n");
     displayTreeInorder(root);
     printf("\n");
+
+    // Exercise from p 444: Insert 36 into the RBT above
+    printf("Tree preorder after insertion of 36\n");
+    root = RBTInsert(root, 36);
+    displayTreePreorder(root);
+    printf("\n");
+
+
     /* Test the rightRotate function
     root = rightRotate(root->leftChild->leftChild->leftChild, root);
     root = rightRotate(root, root);
