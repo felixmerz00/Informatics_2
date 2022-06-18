@@ -31,6 +31,23 @@ void displayTreePreorder(struct Node *p)
     }
 }
 
+// Checks weather a given value is in the given tree
+// Returns 1 if the tree contains the value, 0 if not
+int search(struct Node *root, int value)
+{
+    struct Node *n = root;
+    while(n != NULL){
+        if(n->value == value){
+            return 1;
+        }else if(value < n->value){
+            n = n->leftChild;
+        }else{
+            n = n->rightChild;
+        }
+    }
+    return 0;
+}
+
 // Right rotates around a given root t of a subtree
 // The left child of t, node s will be the root of the subtree after the changes and t will be the right child of s
 // Slides 433
@@ -215,5 +232,9 @@ int main()
     root = leftRotate(root, root);
     displayTreePreorder(root);
     printf("\n"); */
+
+    /* Test the search function
+    printf("The tree contains the number 19: %d\n", search(root, 19));
+    printf("The tree contains the number 99: %d\n", search(root, 99)); */
     return 0;
 }
