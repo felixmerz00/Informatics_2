@@ -82,7 +82,7 @@ struct Node* leftRotate(struct Node *root, struct Node *t)
     return root;
 }
 
-// Fixup takes a node and corrects the coloring and the black height to fullfill the red black tree conditions
+// Fixup takes a node and corrects the coloring and the black height to fullfill the red black tree properties
 // Slide 435 and following
 struct Node* fixup(struct Node *root, struct Node *t)
 {
