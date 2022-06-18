@@ -29,7 +29,6 @@ void displayTreePreorder(struct Node *p)
         displayTreePreorder(p->leftChild);
         displayTreePreorder(p->rightChild);
     }
-
 }
 
 // Right rotates around a given root t of a subtree
@@ -55,6 +54,31 @@ struct Node* rightRotate(struct Node *t, struct Node *root)
     s->rightChild = t;
     t->parent = s;
 
+    return root;
+}
+
+// Left rotates around a given root t of a subtree
+// The right child of t, node s will be the root of the subtree after the changes and t will be the left child of s
+// Slides 433
+struct Node* leftRotate(struct Node *root, struct Node *t)
+{
+    struct Node *s = t->rightChild;
+    t->rightChild = s->leftChild;
+    s->parent = t->parent;
+    if(s->leftChild != NULL){
+        s->leftChild->parent = t;
+    }
+    if(t->parent == NULL){
+        root = s;
+    }else{
+        if(t == t->parent->leftChild){
+            t->parent->leftChild = s;
+        }else{
+            t->parent->rightChild = s;
+        }
+    }
+    s->leftChild = t;
+    t->parent = s;
     return root;
 }
 
@@ -114,5 +138,11 @@ int main()
     root = rightRotate(root, root);
     displayTreePreorder(root); printf("\n");
     printf("Rightrotate successful\n");*/
+
+    /* Test the leftRotate function
+    root = leftRotate(root, root->rightChild);
+    root = leftRotate(root, root);
+    displayTreePreorder(root);
+    printf("\n"); */
     return 0;
 }
