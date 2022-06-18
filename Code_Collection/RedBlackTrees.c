@@ -97,24 +97,22 @@ struct Node* RBTInsert(struct Node *root, int value)
 
 int main()
 {
-    printf("Hello World\n");
     int A[] = {26, 17, 41, 14, 21, 30, 47, 10, 16, 19, 23, 28, 38, 7, 12, 15, 20, 35, 39, 3};   // length = 20
     struct Node *root;
     root = NULL;
-    printf("Initialization successful\n");
     for(int i = 0; i < 20; i++){
         root = RBTInsert(root, A[i]);
     }
-    printf("Tree build successful\n");
+    printf("Tree preorder print:\n");
     displayTreePreorder(root);
     printf("\n");
-    printf("Tree preorder print successful\n");
+    printf("Tree inorder print:\n");
     displayTreeInorder(root);
     printf("\n");
-    printf("Tree inorder print successful\n");
     /* Test the rightRotate function
     root = rightRotate(root->leftChild->leftChild->leftChild, root);
+    root = rightRotate(root, root);
     displayTreePreorder(root); printf("\n");
-    printf("Rightrotate successful"); */
+    printf("Rightrotate successful\n");*/
     return 0;
 }
