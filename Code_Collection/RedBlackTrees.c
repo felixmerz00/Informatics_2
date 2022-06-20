@@ -199,6 +199,45 @@ struct Node* RBTInsert(struct Node *root, int value)
     return root;
 }
 
+struct Node* delete(struct Node *root, int value)
+{
+    // We first apply binary search tree deletion
+    // Find the node to be deleted (I called it s)
+    struct Node *s = root;
+    while(s->value != value){
+        if(s == NULL){
+            printf("The does not contain a node with the value %d.\n", value);
+            return root;
+        }
+        else if(s->value > value){
+            s = s->leftChild;
+        }else{
+            s = s->rightChild;
+        }
+    }
+    
+    {   // If a node has only one child, we can easily delete it
+        if(s->leftChild == NULL){   // s has only a right child
+            s->rightChild->parent = s->parent;
+            if(s->parent->leftChild == s){  // s is a left child
+                s->parent->leftChild = s->rightChild;
+            }else{
+                s->parent->rightChild = s->rightChild;
+            }
+        }else if(s->rightChild == NULL){    // s has only a left child
+            s->leftChild->parent = s->parent;
+            if(s->parent->leftChild == s){
+                s->parent->leftChild = s->leftChild;
+            }else{
+                s->parent->rightChild = s->leftChild;
+            }
+        }
+        free(s);
+    }
+
+    return root;
+}
+
 int main()
 {
     int A[] = {26, 17, 41, 14, 21, 30, 47, 10, 16, 19, 23, 28, 38, 7, 12, 15, 20, 35, 39, 3};   // length = 20
@@ -214,11 +253,11 @@ int main()
     displayTreeInorder(root);
     printf("\n");
 
-    // Exercise from p 444: Insert 36 into the RBT above
+    /* Exercise from p 444: Insert 36 into the RBT above
     printf("Tree preorder after insertion of 36\n");
     root = RBTInsert(root, 36);
     displayTreePreorder(root);
-    printf("\n");
+    printf("\n"); */
 
 
     /* Test the rightRotate function
@@ -236,5 +275,12 @@ int main()
     /* Test the search function
     printf("The tree contains the number 19: %d\n", search(root, 19));
     printf("The tree contains the number 99: %d\n", search(root, 99)); */
+
+    /* Test for deletion of a node with one child
+    root = delete(root, 16);
+    printf("Tree after deletion of 16:\n");
+    displayTreePreorder(root);
+    printf("\n"); */
+    
     return 0;
 }
