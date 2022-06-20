@@ -216,8 +216,16 @@ struct Node* delete(struct Node *root, int value)
         }
     }
     
-    {   // If a node has only one child, we can easily delete it
-        if(s->leftChild == NULL){   // s has only a right child
+    // If a node has zero or one child, we can easily delete it
+    if(s->leftChild == NULL || s->rightChild == NULL){
+        if(s->leftChild == NULL && s->rightChild == NULL){  // s has no children
+            if(s->parent->leftChild == s){
+                s->parent->leftChild = NULL;
+            }else{
+                s->parent->rightChild = NULL;
+            }
+        }
+        else if(s->leftChild == NULL){   // s has only a right child
             s->rightChild->parent = s->parent;
             if(s->parent->leftChild == s){  // s is a left child
                 s->parent->leftChild = s->rightChild;
@@ -281,6 +289,6 @@ int main()
     printf("Tree after deletion of 16:\n");
     displayTreePreorder(root);
     printf("\n"); */
-    
+
     return 0;
 }
