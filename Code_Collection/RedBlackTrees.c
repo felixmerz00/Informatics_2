@@ -204,6 +204,7 @@ struct Node* delete(struct Node *root, int value)
     // We first apply binary search tree deletion
     // Find the node to be deleted (I called it s)
     struct Node *s = root;
+    struct Node *v;
     while(s->value != value){
         if(s == NULL){
             printf("The does not contain a node with the value %d.\n", value);
@@ -241,6 +242,14 @@ struct Node* delete(struct Node *root, int value)
             }
         }
         free(s);
+    }
+    else{   /* Case: the node to be delted (s) has two children --> replace the the value of s 
+        with the value of the biggest node in the left subtree (v), and delete v instead */
+        v = s->leftChild;
+        while(v->rightChild != NULL){   // Find biggest element in left subtree (v)
+            v = v->rightChild;
+        }
+        s->value = v->value;    // Replace the value of s with the value of v
     }
 
     return root;
