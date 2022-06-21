@@ -219,61 +219,50 @@ struct Node* RBTInsert(struct Node *root, int value)
 struct Node* delete_node(struct Node *root, struct Node *x)
 {
     // We first apply binary search tree deletion (Slides p. 423)
-    struct Node *v = x->parent;
+
+    // If x has two children:
+    if(x->rightChild != NULL && x->leftChild != NULL){
+        // Find the biggest element in the left subtree
+        struct Node *p = x->leftChild;
+        while(p->rightChild != NULL){
+            p = p->rightChild;
+        }
+
+        x->value = p->value;    // Copy its value into the node to be deleted, and delete the biggest node of the left subtree instead
+        x = p;
+    }
 
     // There are six different cases, if x has less then two children.
+    struct Node *p = x->parent;
     if(x->rightChild == NULL){
         if(x->parent == NULL){  // Case 1
             root = x->leftChild;
             x->leftChild->parent = NULL;
         }
-        else if(v->leftChild == x){ // Case 2
-            v->leftChild = x->leftChild;
-            x->leftChild->parent = v;
+        else if(p->leftChild == x){ // Case 2
+            p->leftChild = x->leftChild;
+            if(x->leftChild != NULL){
+                x->leftChild->parent = p;
+            }
         }else{  // Case 3
-            v->rightChild = x->leftChild;
-            x->leftChild->parent = v;
+            p->rightChild = x->leftChild;
+            if(x->leftChild != NULL){
+                x->leftChild->parent = p;
+            }
         }
     }else if(x->leftChild == NULL){
         if(x->parent == NULL){  // Case 4
             root = x->rightChild;
             x->leftChild->parent = NULL;
-        }else if(v->leftChild == x){    // Case 5
-            v->leftChild = x->rightChild;
-            x->rightChild->parent = v;
+        }else if(p->leftChild == x){    // Case 5
+            p->leftChild = x->rightChild;
+            x->rightChild->parent = p;
         }else{  // Case 6
-            v->rightChild = x->rightChild;
-            x->rightChild->parent = v;
+            p->rightChild = x->rightChild;
+            x->rightChild->parent = p;
         }
     }
-    // If x has two children:
-    else{
-        // Find the biggest element in the left subtree
-        struct Node *p = x->leftChild;
-        struct Node *q = p; // Points to the node before p (parent of biggest element of the left subtree)
-        while(p->rightChild != NULL){
-            q = p;
-            p = p->rightChild;
-        }
 
-        if(x->parent == NULL){
-            root = p;
-            p->parent = NULL;
-        }else if(v->leftChild == x){
-            v->leftChild = p;
-        }else{
-            v->rightChild = p;
-        }
-
-        p->rightChild = x->rightChild;
-        p->rightChild->parent = p;
-        if(p != q){
-            q->rightChild = p->leftChild;
-            if(q->rightChild != NULL){q->rightChild->parent = q;}
-            p->leftChild = x->leftChild;
-            p->leftChild->parent = p;
-        }
-    }
     free(x);
 
     // Insert color fixup cases
@@ -337,7 +326,7 @@ int main()
         printf("Node 27 not found!\n");
     } */
 
-    /* Test deletion of node with delete_by_address for different nodes
+    /* Test deletion of node with delete_by_address for different nodes */
     struct Node *x = search_address(root, 16);
     if(x != NULL){root = delete_node(root, x);}
     printf("Tree preorder after deleting 16.\n");
@@ -348,7 +337,7 @@ int main()
     if(x != NULL){root = delete_node(root, x);}
     printf("Tree preorder after deleting 26.\n");
     displayTreePreorder(root);
-    printf("\n"); */
+    printf("\n");
 
     return 0;
 }
