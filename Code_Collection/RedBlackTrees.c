@@ -48,6 +48,21 @@ int search(struct Node *root, int value)
     return 0;
 }
 
+struct Node* search_address(struct Node *root, int value)
+{
+    struct Node *n = root;
+    while(n != NULL){
+        if(n->value == value){
+            return n;
+        }else if(value < n->value){
+            n = n->leftChild;
+        }else{
+            n = n->rightChild;
+        }
+    }
+    return NULL;
+}
+
 // Right rotates around a given root t of a subtree
 // The left child of t, node s will be the root of the subtree after the changes and t will be the right child of s
 // Slides 433
@@ -292,6 +307,22 @@ int main()
     /* Test the search function
     printf("The tree contains the number 19: %d\n", search(root, 19));
     printf("The tree contains the number 99: %d\n", search(root, 99)); */
+
+    /* Test the search_address function */
+    struct Node *h;
+    h = search_address(root, 26);
+    if(h != NULL){
+        printf("Node 26 found!\n");
+    }else{
+        printf("Node 26 not found!\n");
+    }
+
+    h = search_address(root, 27);
+    if(h != NULL){
+        printf("Node 27 found!\n");
+    }else{
+        printf("Node 27 not found!\n");
+    }
 
     /* Test for deletion of a node with one child
     root = delete(root, 16);
