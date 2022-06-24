@@ -239,7 +239,7 @@ struct Node* fixup_deletion(struct Node *root, struct Node *x, struct Node *p)
             b = b->leftChild;
             root = leftRotate(root, p);
         }
-        if((b->leftChild->color == 'b' || b->leftChild == NULL) && (b->rightChild->color == 'b' || b->rightChild == NULL)){ // Case 2
+        if((b->leftChild == NULL || b->leftChild->color == 'b') && (b->rightChild == NULL || b->rightChild->color == 'b')){ // Case 2
             b->color = 'r';
             if(p->color == 'r'){
                 p->color = 'b';
@@ -266,11 +266,12 @@ struct Node* fixup_deletion(struct Node *root, struct Node *x, struct Node *p)
         if(b->color == 'r'){ // Mirror Case 1
             b->color = 'b';
             p->color = 'r';
+            b = b->rightChild;
             root = rightRotate(root, p);
         }
 
         // Fix the conditions according to the not - mirror cases
-        if(b->color == 'b' && b->leftChild->color == 'b' && b->rightChild->color == 'b'){ // Mirror Case 2
+        if((b->leftChild == NULL || b->leftChild->color == 'b') && (b->rightChild == NULL || b->rightChild->color == 'b')){ // Mirror Case 2
             b->color = 'r';
             if(p->color == 'r'){
                 p->color = 'b';
@@ -278,13 +279,13 @@ struct Node* fixup_deletion(struct Node *root, struct Node *x, struct Node *p)
                 root = fixup_deletion(root, p, p->parent);
             }
         }
-        if(b->color == 'b' && b->leftChild->color == 'b' && b->rightChild->color == 'r'){   // Mirror Case 3
+        if((b->leftChild == NULL || b->leftChild->color == 'b') && b->rightChild->color == 'r'){   // Mirror Case 3
             b->rightChild->color = 'b';
             b->color = 'r';
             root = leftRotate(root, b);
             b = p->leftChild;
         }
-        if(b->color == 'b' && b->leftChild->color == 'r' && b->rightChild->color == 'b'){   // Mirror Case 4
+        if(b->leftChild->color == 'r' && (b->rightChild == NULL || b->rightChild->color == 'b')){   // Mirror Case 4
             b->color = p->color;
             p->color = 'b';
             b->leftChild->color = 'b';
@@ -434,30 +435,30 @@ int main()
 
 void test_deletion_fixup()
 {
-    // Test case 0
-    // x is read
+    int i;
+    struct Node *x;
+    /* Test case 0: x is red
     printf("Test deletion fixup case 0\n");
     struct Node *root = NULL;
     root = RBTInsert(root, 10); root = RBTInsert(root, 7); root = RBTInsert(root, 12); root = RBTInsert(root, 3);
     displayTreePreorder(root); printf("\n");
-    struct Node *x = search_address(root, 7);
+    x = search_address(root, 7);
     root = delete_node(root, x);
-    displayTreePreorder(root); printf("\n");
+    displayTreePreorder(root); printf("\n"); */
 
-    // Test mirror case 0
+    /* Test mirror case 0
     printf("Test deletion fixup mirror case 0\n");
     root = RBTInsert(root, 14);
     displayTreePreorder(root); printf("\n");
     x = search_address(root, 12);
     root = delete_node(root, x);
-    displayTreePreorder(root); printf("\n");
+    displayTreePreorder(root); printf("\n"); */
 
-    // Test case 1
-    // b is red, every thing else black
+    // Test case 1: b is red, every thing else black
     printf("Test deletion fixup case 1\n");
     struct Node *root2 = NULL;
     int A[] = {55, 40, 65, 60, 75, 57};
-    for(int i = 0; i < 6; i++){
+    for(i = 0; i < 6; i++){
         root2 = RBTInsert(root2, A[i]);
     }
     displayTreePreorder(root2); printf("\n");
@@ -465,10 +466,15 @@ void test_deletion_fixup()
     root2 = delete_node(root2, x);
     displayTreePreorder(root2); printf("\n");
 
-    // Test case 2 & 3
-    // For case two and three I couldn't find a tree where this case applies.
-
-
-
-
+    /* Test mirror case 1 */
+    printf("Test deletion fixup mirror case 1\n");
+    struct Node *root3 = NULL;
+    int B[] = {55, 60, 35, 30, 40, 45};
+    for(i = 0; i < 6; i ++){
+        root3 = RBTInsert(root3, B[i]);
+    }
+    displayTreePreorder(root3); printf("\n");
+    x = search_address(root3, 60);
+    root3 = delete_node(root3, x);
+    displayTreePreorder(root3); printf("\n");
 }
