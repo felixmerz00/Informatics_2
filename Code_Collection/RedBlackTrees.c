@@ -33,7 +33,7 @@ void displayTreePreorder(struct Node *p)
     }
 }
 
-// Checks weather a given value is in the given tree
+// Checks whether a given value is in the given tree
 // Returns 1 if the tree contains the value, 0 if not
 int search(struct Node *root, int value)
 {
@@ -131,7 +131,7 @@ struct Node* fixup(struct Node *root, struct Node *t)
     struct Node *g = t->parent->parent; // Grandparent of t
     struct Node *u = NULL; // Uncle of t
 
-    // Test weather p is the left child of g: case 0 - case 3
+    // Test whether p is the left child of g: case 0 - case 3
     // From Slide 435 - 439
     if(g->leftChild == p){
         if(g->rightChild != NULL){  // Asign uncle
@@ -247,13 +247,13 @@ struct Node* fixup_deletion(struct Node *root, struct Node *x, struct Node *p)
                 root = fixup_deletion(root, p, p->parent);
             }
         }
-        if(b->leftChild->color == 'r' && (b->rightChild == NULL || b->rightChild->color == 'b')){   // Case 3
+        if((b->leftChild != NULL && b->leftChild->color == 'r') && (b->rightChild == NULL || b->rightChild->color == 'b')){   // Case 3
             b->leftChild->color = 'b';
             b->color = 'r';
             root = rightRotate(root, b);
             b = p->rightChild;
         }
-        if((b->leftChild == NULL || b->leftChild->color == 'b') && b->rightChild->color == 'r'){   // Case 4
+        if((b->leftChild == NULL || b->leftChild->color == 'b') && (b->rightChild != NULL && b->rightChild->color == 'r')){   // Case 4
             b->color = p->color;
             p->color = 'b';
             b->rightChild->color = 'b';
@@ -279,13 +279,13 @@ struct Node* fixup_deletion(struct Node *root, struct Node *x, struct Node *p)
                 root = fixup_deletion(root, p, p->parent);
             }
         }
-        if((b->leftChild == NULL || b->leftChild->color == 'b') && b->rightChild->color == 'r'){   // Mirror Case 3
+        if((b->leftChild == NULL || b->leftChild->color == 'b') && (b->rightChild != NULL && b->rightChild->color == 'r')){   // Mirror Case 3
             b->rightChild->color = 'b';
             b->color = 'r';
             root = leftRotate(root, b);
             b = p->leftChild;
         }
-        if(b->leftChild->color == 'r' && (b->rightChild == NULL || b->rightChild->color == 'b')){   // Mirror Case 4
+        if((b->leftChild != NULL && b->leftChild->color == 'r') && (b->rightChild == NULL || b->rightChild->color == 'b')){   // Mirror Case 4
             b->color = p->color;
             p->color = 'b';
             b->leftChild->color = 'b';
@@ -352,6 +352,7 @@ struct Node* delete_node(struct Node *root, struct Node *x)
         free(x);
     }else{
         root = fixup_deletion(root, s, parent);
+        free(x);
     }
 
     return root;
@@ -437,6 +438,7 @@ void test_deletion_fixup()
 {
     int i;
     struct Node *x;
+
     /* Test case 0: x is red
     printf("Test deletion fixup case 0\n");
     struct Node *root = NULL;
@@ -454,8 +456,8 @@ void test_deletion_fixup()
     root = delete_node(root, x);
     displayTreePreorder(root); printf("\n"); */
 
-    // Test case 1: b is red, every thing else black
-    printf("Test deletion fixup case 1\n");
+    /* Test case 1, 3, 4: b is red, every thing else black
+    printf("Test deletion fixup case 1, 3 and 4\n");
     struct Node *root2 = NULL;
     int A[] = {55, 40, 65, 60, 75, 57};
     for(i = 0; i < 6; i++){
@@ -464,10 +466,10 @@ void test_deletion_fixup()
     displayTreePreorder(root2); printf("\n");
     x = search_address(root2, 40);
     root2 = delete_node(root2, x);
-    displayTreePreorder(root2); printf("\n");
+    displayTreePreorder(root2); printf("\n"); */
 
-    /* Test mirror case 1 */
-    printf("Test deletion fixup mirror case 1\n");
+    /* Test mirror case 1, 3 and 4
+    printf("Test deletion fixup mirror case 1, 3 and 4\n");
     struct Node *root3 = NULL;
     int B[] = {55, 60, 35, 30, 40, 45};
     for(i = 0; i < 6; i ++){
@@ -476,5 +478,33 @@ void test_deletion_fixup()
     displayTreePreorder(root3); printf("\n");
     x = search_address(root3, 60);
     root3 = delete_node(root3, x);
-    displayTreePreorder(root3); printf("\n");
+    displayTreePreorder(root3); printf("\n"); */
+
+    /* Test case 2: b and its children are black
+    printf("Test deletion fixup case 2\n");
+    struct Node *root4 = NULL;
+    int C[] = {42, 29, 64, 7, 31, 32};
+    for(i = 0; i < 6; i++){
+        root4 = RBTInsert(root4, C[i]);
+    }
+    x = search_address(root4, 32);
+    root4 = delete_node(root4, x);
+    displayTreePreorder(root4); printf("\n");
+    x = search_address(root4, 7);
+    root4 = delete_node(root4, x);
+    displayTreePreorder(root4); printf("\n"); */
+
+    /* Test mirror case 2
+    printf("Test deletion fixup mirror case 2\n");
+    struct Node *root5 = NULL;
+    int C[] = {42, 29, 64, 7, 31, 32};
+    for(i = 0; i < 6; i++){
+        root5 = RBTInsert(root5, C[i]);
+    }
+    x = search_address(root5, 32);
+    root5 = delete_node(root5, x);
+    displayTreePreorder(root5); printf("\n");
+    x = search_address(root5, 31);
+    root5 = delete_node(root5, x);
+    displayTreePreorder(root5); printf("\n"); */
 }
